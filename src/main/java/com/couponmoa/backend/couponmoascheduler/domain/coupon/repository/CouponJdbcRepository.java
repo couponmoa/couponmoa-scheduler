@@ -1,6 +1,8 @@
 package com.couponmoa.backend.couponmoascheduler.domain.coupon.repository;
 
+import com.couponmoa.backend.couponmoascheduler.domain.coupon.dto.CouponIdDto;
 import com.couponmoa.backend.couponmoascheduler.domain.coupon.dto.CouponStockDto;
+import com.couponmoa.backend.couponmoascheduler.domain.coupon.dto.HasCouponId;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
@@ -28,8 +30,22 @@ public class CouponJdbcRepository {
         return jdbcTemplate.query(sql, couponStockDtoRowMapper());
     }
 
+    public List<CouponIdDto> findCouponsToDeActivate() {
+        String sql = """
+                SELECT id FROM coupons
+                WHERE status = 'IN_PROGRESS' AND end_date <= CURRENT_TIMESTAMP
+                AND deleted_at IS NULL
+        """;
+        return jdbcTemplate.query(sql, couponIdDtoRowMapper());
+    }
+
     public void activateCoupons(List<CouponStockDto> coupons) {
         String sql = "UPDATE coupons SET status = 'IN_PROGRESS', modified_at = CURRENT_TIMESTAMP WHERE id = ?";
+        jdbcTemplate.batchUpdate(sql, coupons, 100, couponIdSetter());
+    }
+
+    public void deactivateCoupons(List<CouponIdDto> coupons) {
+        String sql = "UPDATE coupons SET status = 'ENDED', modified_at = CURRENT_TIMESTAMP WHERE id = ?";
         jdbcTemplate.batchUpdate(sql, coupons, 100, couponIdSetter());
     }
 
@@ -37,7 +53,11 @@ public class CouponJdbcRepository {
         return BeanPropertyRowMapper.newInstance(CouponStockDto.class);
     }
 
-    private ParameterizedPreparedStatementSetter<CouponStockDto> couponIdSetter() {
+    private RowMapper<CouponIdDto> couponIdDtoRowMapper() {
+        return BeanPropertyRowMapper.newInstance(CouponIdDto.class);
+    }
+
+    private <T extends HasCouponId> ParameterizedPreparedStatementSetter<T> couponIdSetter() {
         return (ps, coupon) -> ps.setLong(1, coupon.getId());
     }
 }

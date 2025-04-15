@@ -1,5 +1,6 @@
 package com.couponmoa.backend.couponmoascheduler.domain.coupon.repository;
 
+import com.couponmoa.backend.couponmoascheduler.domain.coupon.dto.CouponIdDto;
 import com.couponmoa.backend.couponmoascheduler.domain.coupon.dto.CouponStockDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -18,11 +19,18 @@ public class CouponRedisRepository {
     private final StringRedisTemplate redisTemplate;
 
     public void saveStock(List<CouponStockDto> coupons) {
-        Map<String, String> couponMap = coupons.stream()
+        Map<String, String> couponStockMap = coupons.stream()
                 .collect(Collectors.toMap(
-                        dto -> COUPON_KEY_PREFIX + dto.getId() + STOCK_KEY_SUFFIX,
-                        dto -> String.valueOf(dto.getStock())
+                        coupon -> COUPON_KEY_PREFIX + coupon.getId() + STOCK_KEY_SUFFIX,
+                        coupon -> String.valueOf(coupon.getStock())
                 ));
-        redisTemplate.opsForValue().multiSet(couponMap);
+        redisTemplate.opsForValue().multiSet(couponStockMap);
+    }
+
+    public void deleteUserSet(List<CouponIdDto> coupons) {
+        List<String> keys = coupons.stream()
+                .map(coupon -> COUPON_KEY_PREFIX + coupon.getId())
+                .toList();
+        redisTemplate.delete(keys);
     }
 }

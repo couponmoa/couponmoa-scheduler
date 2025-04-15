@@ -1,5 +1,6 @@
 package com.couponmoa.backend.couponmoascheduler.common.scheduler;
 
+import com.couponmoa.backend.couponmoascheduler.domain.coupon.dto.CouponIdDto;
 import com.couponmoa.backend.couponmoascheduler.domain.coupon.dto.CouponStockDto;
 import com.couponmoa.backend.couponmoascheduler.domain.coupon.repository.CouponJdbcRepository;
 import com.couponmoa.backend.couponmoascheduler.domain.coupon.repository.CouponRedisRepository;
@@ -21,5 +22,12 @@ public class CouponScheduler {
         List<CouponStockDto> coupons = couponJdbcRepository.findCouponsToActivate();
         couponRedisRepository.saveStock(coupons);
         couponJdbcRepository.activateCoupons(coupons);
+    }
+
+    @Scheduled(cron = "0 0/30 * * * *")
+    public void deactivateAvailableCoupons() {
+        List<CouponIdDto> coupons = couponJdbcRepository.findCouponsToDeActivate();
+        couponRedisRepository.deleteUserSet(coupons);
+        couponJdbcRepository.deactivateCoupons(coupons);
     }
 }

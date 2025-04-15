@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class CouponStockDto {
+public class CouponStockDto implements HasCouponId {
     private Long id;
     private Integer stock;
     private LocalDateTime startDate;
