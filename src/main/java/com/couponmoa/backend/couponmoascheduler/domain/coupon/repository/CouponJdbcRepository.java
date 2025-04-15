@@ -1,12 +1,12 @@
 package com.couponmoa.backend.couponmoascheduler.domain.coupon.repository;
 
+import com.couponmoa.backend.couponmoascheduler.domain.coupon.dto.CouponQuantityDto;
 import com.couponmoa.backend.couponmoascheduler.domain.coupon.dto.CouponIdDto;
 import com.couponmoa.backend.couponmoascheduler.domain.coupon.dto.CouponStockDto;
 import com.couponmoa.backend.couponmoascheduler.domain.coupon.dto.HasCouponId;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -27,7 +27,7 @@ public class CouponJdbcRepository {
                 WHERE status = 'UPCOMING' AND start_date <= CURRENT_TIMESTAMP
                 AND deleted_at IS NULL
         """;
-        return jdbcTemplate.query(sql, couponStockDtoRowMapper());
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(CouponStockDto.class));
     }
 
     public List<CouponIdDto> findCouponsToDeActivate() {
@@ -36,7 +36,19 @@ public class CouponJdbcRepository {
                 WHERE status = 'IN_PROGRESS' AND end_date <= CURRENT_TIMESTAMP
                 AND deleted_at IS NULL
         """;
-        return jdbcTemplate.query(sql, couponIdDtoRowMapper());
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(CouponIdDto.class));
+    }
+
+    public List<CouponQuantityDto> findCouponsToUpdateIssuedQuantity() {
+        String sql = """
+                SELECT c.id, c.issued_quantity, COUNT(uc.coupon_id) AS actual_quantity
+                FROM coupons c
+                LEFT JOIN user_coupons uc ON c.id = uc.coupon_id
+                WHERE c.status = 'IN_PROGRESS' AND c.deleted_at IS NULL
+                GROUP BY c.id
+                HAVING c.issued_quantity != COUNT(uc.coupon_id)
+        """;
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(CouponQuantityDto.class));
     }
 
     public void activateCoupons(List<CouponStockDto> coupons) {
@@ -49,12 +61,12 @@ public class CouponJdbcRepository {
         jdbcTemplate.batchUpdate(sql, coupons, 100, couponIdSetter());
     }
 
-    private RowMapper<CouponStockDto> couponStockDtoRowMapper() {
-        return BeanPropertyRowMapper.newInstance(CouponStockDto.class);
-    }
-
-    private RowMapper<CouponIdDto> couponIdDtoRowMapper() {
-        return BeanPropertyRowMapper.newInstance(CouponIdDto.class);
+    public void updateCouponIssuedQuantity(List<CouponQuantityDto> coupons) {
+        String sql = "UPDATE coupons SET issued_quantity = ?, modified_at = CURRENT_TIMESTAMP WHERE id = ?";
+        jdbcTemplate.batchUpdate(sql, coupons, 100, (ps, coupon) -> {
+            ps.setLong(1, coupon.getActualQuantity());
+            ps.setLong(2, coupon.getId());
+        });
     }
 
     private <T extends HasCouponId> ParameterizedPreparedStatementSetter<T> couponIdSetter() {
