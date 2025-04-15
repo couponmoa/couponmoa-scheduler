@@ -1,13 +1,13 @@
-package com.couponmoa.backend.couponmoanotification;
+package com.couponmoa.backend.couponmoascheduler;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CouponmoaNotificationApplication {
+public class CouponmoaSchedulerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CouponmoaNotificationApplication.class, args);
+		SpringApplication.run(CouponmoaSchedulerApplication.class, args);
 	}
 
 }
