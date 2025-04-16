@@ -1,12 +1,4 @@
 spring:
-  cloud:
-    aws:
-      region:
-        static: ap-northeast-2
-      credentials:
-        access-key: ${AWS_ACCESS_KEY_ID}
-        secret-key: ${AWS_SECRET_ACCESS_KEY}
-
   datasource:
     url: ${MYSQL_URL}
     username: ${DB_USERNAME}
