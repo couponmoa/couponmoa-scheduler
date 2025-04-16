@@ -19,11 +19,16 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1")
-	implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'
+//	implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1")
+//	implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'
 }
 
 tasks.named('test') {

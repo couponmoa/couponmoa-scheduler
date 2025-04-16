@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Local configuration files ###
+*-local.yml
+*-local.properties
