@@ -17,6 +17,10 @@ springBoot {
 	mainClass = 'com.couponmoa.backend.couponmoascheduler.CouponmoaSchedulerApplication'
 }
 
+jar {
+	enabled = false
+}
+
 repositories {
 	mavenCentral()
 }
