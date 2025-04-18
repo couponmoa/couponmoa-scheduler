@@ -1,8 +1,16 @@
 spring:
-  datasource:
-    url: ${MYSQL_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+  domain-datasource:
+    pool-name: domain-db
+    jdbc-url: ${DOMAIN_DB_URL}
+    username: ${DOMAIN_DB_USERNAME}
+    password: ${DOMAIN_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  batch-datasource:
+    pool-name: batch-db
+    jdbc-url: ${BATCH_DB_URL}
+    username: ${BATCH_DB_USERNAME}
+    password: ${BATCH_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   data:

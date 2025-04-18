@@ -4,3 +4,9 @@ spring:
 
   profiles:
     active: local
+
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
