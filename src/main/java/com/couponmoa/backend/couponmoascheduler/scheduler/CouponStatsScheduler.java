@@ -20,7 +20,7 @@ import static com.couponmoa.backend.couponmoascheduler.batch.CouponUsageStatsJob
 
 @Component
 @RequiredArgsConstructor
-public class CouponStatScheduler {
+public class CouponStatsScheduler {
 
     private final JobLauncher jobLauncher;
     private final JobRegistry jobRegistry;
