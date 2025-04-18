@@ -1,0 +1,36 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # gradlew 테스트 빌드
+      - name: Run tests
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean test
+
+      # gradlew 테스트 없이 빌드
+      - name: Build Spring Boot App (without test)
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build -x test
