@@ -1,4 +1,4 @@
-package com.couponmoa.backend.couponmoascheduler.common.scheduler;
+package com.couponmoa.backend.couponmoascheduler.scheduler;
 
 import com.couponmoa.backend.couponmoascheduler.domain.coupon.dto.CouponQuantityDto;
 import com.couponmoa.backend.couponmoascheduler.domain.coupon.dto.CouponIdDto;
