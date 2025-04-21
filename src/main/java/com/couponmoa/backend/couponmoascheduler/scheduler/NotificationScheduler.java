@@ -1,4 +1,4 @@
-package com.couponmoa.backend.couponmoascheduler.common.scheduler;
+package com.couponmoa.backend.couponmoascheduler.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;

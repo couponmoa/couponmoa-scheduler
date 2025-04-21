@@ -1,6 +1,6 @@
 package com.couponmoa.backend.couponmoascheduler.controller;
 
-import com.couponmoa.backend.couponmoascheduler.common.scheduler.NotificationScheduler;
+import com.couponmoa.backend.couponmoascheduler.scheduler.NotificationScheduler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
