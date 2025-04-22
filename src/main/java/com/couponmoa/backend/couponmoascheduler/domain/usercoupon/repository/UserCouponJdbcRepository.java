@@ -1,9 +1,13 @@
 package com.couponmoa.backend.couponmoascheduler.domain.usercoupon.repository;
 
+import com.couponmoa.backend.couponmoascheduler.domain.usercoupon.dto.CouponIdRangeDto;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Repository
 public class UserCouponJdbcRepository {
@@ -22,5 +26,17 @@ public class UserCouponJdbcRepository {
                 WHERE uc.status = 'UNUSED' AND c.expiry_date <= CURRENT_TIMESTAMP
         """;
         jdbcTemplate.update(sql);
+    }
+
+    public CouponIdRangeDto getCouponIdRange(LocalDate statDate) {
+        String sql = """
+                SELECT MIN(coupon_id) AS min_id, MAX(coupon_id) AS max_id
+                FROM user_coupons
+                WHERE status = 'USED' AND ? <= modified_at AND modified_at < ?
+        """;
+        LocalDateTime startDate = statDate.atStartOfDay();
+        LocalDateTime endDate = statDate.plusDays(1).atStartOfDay();
+
+        return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(CouponIdRangeDto.class), startDate, endDate);
     }
 }
