@@ -14,9 +14,9 @@ public class NotificationTestController {
 
     private final NotificationScheduler notificationScheduler;
 
-    @PostMapping("/trigger-expire-notification")
-    public ResponseEntity<String> triggerExpireNotification() {
-        notificationScheduler.expireCouponNotifications(); // 직접 호출
-        return ResponseEntity.ok("스케줄러 직접 실행 완료");
-    }
+//    @PostMapping("/trigger-expire-notification")
+//    public ResponseEntity<String> triggerExpireNotification() {
+//        notificationScheduler.expireCouponNotifications(); // 직접 호출
+//        return ResponseEntity.ok("스케줄러 직접 실행 완료");
+//    }
 }
