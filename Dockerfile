@@ -1,9 +1,7 @@
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-jdk-alpine
 
-WORKDIR /app
+ARG JAR_FILE=build/libs/*.jar
 
-COPY build/libs/app.jar app.jar
+COPY ${JAR_FILE} app.jar
 
-ENV SPRING_PROFILES_ACTIVE=prod
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar", "--spring.profiles.active=prod"]

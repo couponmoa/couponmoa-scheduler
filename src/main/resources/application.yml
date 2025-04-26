@@ -1,12 +1,22 @@
+server:
+  port: 8085
+
 spring:
   application:
     name: couponmoa-scheduler
-
   profiles:
-    active: local
-
+    active: ${SPRING_PROFILE:local}
   batch:
     jdbc:
       initialize-schema: always
     job:
       enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
